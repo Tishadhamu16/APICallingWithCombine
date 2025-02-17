@@ -12,9 +12,9 @@ class CombineDataManager {
     
     //function to fetch multiple images with combien
     func fetchMultipleImagesWithCombine() -> AnyPublisher<[UIImage], Error> {
-        var urlPool : [URL] = [ URL(string: "https://picsum.photos/200/300")!, URL(string: "https://picsum.photos/200/300")!, URL(string: "https://picsum.photos/200/300")!, URL(string: "https://picsum.photos/200/300")!]
+        let urlPool : [URL] = [ URL(string: "https://picsum.photos/200/300")!, URL(string: "https://picsum.photos/200/300")!, URL(string: "https://picsum.photos/200/300")!, URL(string: "https://picsum.photos/200/300")!]
         
-        var publishers = urlPool.map {
+        let publishers = urlPool.map {
             fetchSingleImageWithCOmbine(url: $0)
         }
         
@@ -39,48 +39,49 @@ class CombineDataManager {
         
     }
 }
-    
-    //this is a view model for the application
-    
-    class CombineViewModel : ObservableObject {
-        @Published var images : [UIImage] = []
-        var cancellables = Set<AnyCancellable>()
-        var dataManager = CombineDataManager()
-        
-        @MainActor
-        func getImage() {
-            dataManager.fetchMultipleImagesWithCombine()
-                .sink(receiveCompletion: { completion in
-                    if case .failure(let error) = completion {
-                        print("Error fetching images:", error.localizedDescription)
-                    }
-                }, receiveValue: { [weak self] images in
-                    self?.images = images
-                })
-                .store(in: &cancellables) // Store subscription
-        }
-    }
 
-    //this the main view
-    struct CombinePractice : View {
-        @StateObject var viewModel = CombineViewModel()
-        
-        var body : some View {
-            NavigationView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
-                    ForEach(viewModel.images, id:\.self) {image in
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                    }
+//this is a view model for the application
+
+class CombineViewModel : ObservableObject {
+    @Published var images : [UIImage] = []
+    var cancellables = Set<AnyCancellable>()
+    var dataManager = CombineDataManager()
+    
+    @MainActor
+    func getImage() {
+        dataManager.fetchMultipleImagesWithCombine()
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching images:", error.localizedDescription)
+                
                 }
-                .navigationTitle("Fetch data with Combine")
+            }, receiveValue: { [weak self] images in
+                self?.images.append(contentsOf: images)
+            })
+            .store(in: &cancellables) // Store subscription
+    }
+}
+
+//this the main view
+struct CombinePractice : View {
+    @StateObject var viewModel = CombineViewModel()
+    
+    var body : some View {
+        NavigationView {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())]) {
+                ForEach(viewModel.images, id:\.self) {image in
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                }
             }
-            .onAppear() {
-                viewModel.getImage()
-            }
+            .navigationTitle("Fetch data with Combine")
+        }
+        .onAppear() {
+            viewModel.getImage()
         }
     }
+}
 
 struct CombinePractice_Previews : PreviewProvider {
     static var previews: some View {

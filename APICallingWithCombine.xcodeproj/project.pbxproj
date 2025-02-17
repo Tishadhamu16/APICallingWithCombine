@@ -11,6 +11,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		90D6C5A72D63206500114BE5 /* CombineBasicExample */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CombineBasicExample;
+			sourceTree = "<group>";
+		};
 		90FA3C222D60D12D00C17594 /* APICallingWithCombine */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = APICallingWithCombine;
@@ -33,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				90FA3C222D60D12D00C17594 /* APICallingWithCombine */,
+				90D6C5A72D63206500114BE5 /* CombineBasicExample */,
 				90FA3C212D60D12D00C17594 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +67,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				90D6C5A72D63206500114BE5 /* CombineBasicExample */,
 				90FA3C222D60D12D00C17594 /* APICallingWithCombine */,
 			);
 			name = APICallingWithCombine;
